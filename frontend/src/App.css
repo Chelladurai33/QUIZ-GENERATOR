@@ -1,0 +1,22 @@
+.main-content-wrapper {
+  margin-left: 260px; /* Space for Sidebar width */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  transition: margin var(--transition-normal);
+}
+
+.app-auth-layout {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* Responsive Media Queries */
+@media (max-width: 1024px) {
+  .main-content-wrapper {
+    margin-left: 0;
+  }
+}

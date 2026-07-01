@@ -1,0 +1,223 @@
+.cyber-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 260px;
+  background: rgba(7, 11, 19, 0.95);
+  backdrop-filter: var(--glass-blur);
+  border-right: 1px solid var(--border-neon);
+  display: flex;
+  flex-direction: column;
+  padding: 30px 20px;
+  z-index: 100;
+  transition: all var(--transition-normal);
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 40px;
+  padding-left: 10px;
+}
+
+.brand-icon {
+  animation: pulseIcon 2s infinite alternate;
+}
+
+@keyframes pulseIcon {
+  0% { transform: scale(1); filter: drop-shadow(0 0 2px var(--neon-cyan)); }
+  100% { transform: scale(1.1); filter: drop-shadow(0 0 8px var(--neon-cyan)); }
+}
+
+.brand-text {
+  font-family: var(--font-cyber);
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  display: flex;
+  gap: 4px;
+}
+
+.brand-main {
+  color: var(--text-primary);
+}
+
+.brand-sub {
+  font-weight: 900;
+}
+
+.sidebar-user-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  background: rgba(17, 26, 46, 0.5);
+  border: 1px dashed var(--border-neon);
+  border-radius: 12px;
+  margin-bottom: 40px;
+}
+
+.user-avatar-wrapper {
+  position: relative;
+  width: 44px;
+  height: 44px;
+}
+
+.user-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--neon-blue);
+  box-shadow: var(--glow-blue);
+}
+
+.user-avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+  color: #fff;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-cyber);
+  border: 2px solid var(--neon-blue);
+}
+
+.online-indicator {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--neon-green);
+  border: 2px solid #070b13;
+  box-shadow: 0 0 5px var(--neon-green);
+}
+
+.user-details {
+  overflow: hidden;
+}
+
+.user-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.user-role {
+  font-size: 10px;
+  font-family: var(--font-cyber);
+  font-weight: 500;
+  letter-spacing: 1px;
+  margin-top: 2px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-grow: 1;
+}
+
+.nav-item {
+  width: 100%;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-family: var(--font-cyber);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  cursor: pointer;
+  position: relative;
+  transition: all var(--transition-normal);
+  text-align: left;
+}
+
+.nav-item-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  background: radial-gradient(circle at 10% 50%, rgba(0, 191, 255, 0.15) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+  pointer-events: none;
+}
+
+.nav-item:hover {
+  color: var(--text-primary);
+  border-color: rgba(0, 191, 255, 0.15);
+  background: rgba(17, 26, 46, 0.35);
+}
+
+.nav-item:hover .nav-item-glow {
+  opacity: 1;
+}
+
+.nav-item.active {
+  color: var(--neon-cyan);
+  background: rgba(0, 191, 255, 0.08);
+  border-color: rgba(0, 191, 255, 0.3);
+  box-shadow: inset 0 0 10px rgba(0, 191, 255, 0.05);
+}
+
+.active-dot {
+  position: absolute;
+  right: 18px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--neon-cyan);
+  box-shadow: var(--glow-cyan);
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  border-top: 1px dashed var(--border-neon);
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.logout-btn {
+  color: var(--text-muted);
+}
+
+.logout-btn:hover {
+  color: var(--neon-pink);
+  border-color: rgba(255, 0, 127, 0.2);
+  background: rgba(255, 0, 127, 0.05);
+}
+
+.sidebar-system-version {
+  font-family: var(--font-cyber);
+  font-size: 9px;
+  color: var(--text-muted);
+  text-align: center;
+  letter-spacing: 2px;
+}
+
+/* Tablet & Mobile responsive styles */
+@media (max-width: 1024px) {
+  .cyber-sidebar {
+    transform: translateX(-100%);
+  }
+}
