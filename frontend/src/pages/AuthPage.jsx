@@ -89,9 +89,9 @@ const AuthPage = () => {
       <div className="auth-terminal-header">
         <Terminal size={32} className="neon-text-cyan auth-brand-icon anim-pulse" />
         <h1 className="auth-brand-title">
-          QUIZ<span className="neon-text-blue">AI_GEN</span>
+          QUIZ<span className="neon-text-blue">AI GEN</span>
         </h1>
-        <p className="auth-subtitle">COGNITIVE DATA EXTRACTION SUITE</p>
+        <p className="auth-subtitle">AI-Powered Quiz Generator</p>
       </div>
 
       <div className="glass-panel auth-card">
@@ -102,8 +102,8 @@ const AuthPage = () => {
         <div className="cyber-accent accent-bottom-right"></div>
 
         <div className="auth-card-header">
-          <h2>{isLogin ? 'SYNC_NODE_LOGIN' : 'REGISTER_NEW_NODE'}</h2>
-          <p>{isLogin ? 'Enter authorization keys to enter' : 'Integrate credentials into the system database'}</p>
+          <h2>{isLogin ? 'Sign In' : 'Create Account'}</h2>
+          <p>{isLogin ? 'Enter your email and password to continue' : 'Fill in the details below to register'}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="auth-form">
@@ -135,7 +135,7 @@ const AuthPage = () => {
               <input
                 type="email"
                 className="cyber-input"
-                placeholder="node@network.domain"
+                placeholder="your@email.com"
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
@@ -149,7 +149,7 @@ const AuthPage = () => {
 
           {/* Password Field */}
           <div className="cyber-input-wrapper">
-            <label className="cyber-label">Password Key</label>
+            <label className="cyber-label">Password</label>
             <div className="input-field-container">
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -223,14 +223,14 @@ const AuthPage = () => {
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
                 />
-                Remember Node
+                Remember Me
               </label>
               <button
                 type="button"
                 className="forgot-password-link"
-                onClick={() => alert('Demo Feature: Cryptographic recovery bypass code sent to local storage logs.')}
+                onClick={() => alert('Feature coming soon: Password reset via email.')}
               >
-                Forgot Decrypt Key?
+                Forgot Password?
               </button>
             </div>
           )}
@@ -240,10 +240,10 @@ const AuthPage = () => {
             {authLoading ? (
               <>
                 <Cpu size={16} className="anim-pulse" />
-                <span>PROCESSING_REQUEST...</span>
+                <span>Please wait...</span>
               </>
             ) : (
-              <span>{isLogin ? 'AUTHORIZE_SYNC' : 'REGISTER_NODE'}</span>
+              <span>{isLogin ? 'Sign In' : 'Create Account'}</span>
             )}
           </button>
         </form>
@@ -252,16 +252,16 @@ const AuthPage = () => {
         <div className="auth-toggle-trigger">
           {isLogin ? (
             <p>
-              Node not registered in local database?{' '}
+              Don't have an account?{' '}
               <button className="auth-toggle-btn" onClick={() => { setIsLogin(false); setErrors({}); }}>
-                Create Node Account
+                Create Account
               </button>
             </p>
           ) : (
             <p>
-              Node keys already integrated?{' '}
+              Already have an account?{' '}
               <button className="auth-toggle-btn" onClick={() => { setIsLogin(true); setErrors({}); }}>
-                Authorize Existing Connection
+                Sign In
               </button>
             </p>
           )}

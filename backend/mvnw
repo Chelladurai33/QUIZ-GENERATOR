@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+
+MAVEN_PROJECTBASEDIR=$(cd "$(dirname "$0")" && pwd)
+MVNW_DIR="${MAVEN_PROJECTBASEDIR}/.mvn/wrapper"
+MAVEN_WRAPPER_JAR="${MVNW_DIR}/maven-wrapper.jar"
+
+if [ ! -f "${MAVEN_WRAPPER_JAR}" ]; then
+  echo "Maven wrapper jar not found: ${MAVEN_WRAPPER_JAR}"
+  exit 1
+fi
+
+exec java -cp "${MAVEN_WRAPPER_JAR}" org.apache.maven.wrapper.MavenWrapperMain "$@"

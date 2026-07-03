@@ -1,6 +1,17 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { generateQuizQuestions, generateAIFeedback } from '../services/mockGenerator';
 
+// Safe JSON helper — returns null instead of throwing on empty/non-JSON responses
+async function safeJson(response) {
+  const text = await response.text();
+  if (!text || text.trim() === '') return null;
+  try {
+    return JSON.parse(text);
+  } catch {
+    return null;
+  }
+}
+
 const AppContext = createContext();
 
 export const useAppContext = () => useContext(AppContext);
@@ -8,7 +19,9 @@ export const useAppContext = () => useContext(AppContext);
 export const AppProvider = ({ children }) => {
   // Config state
   const [mode, setMode] = useState(() => localStorage.getItem('quizgen_mode') || 'demo'); // 'demo' or 'api'
-  const [apiBaseUrl] = useState('http://localhost:8080/api');
+  const [apiBaseUrl] = useState(() =>
+    import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? '/api' : 'http://localhost:8080/api')
+  );
 
   // Authentication State
   const [user, setUser] = useState(() => {
@@ -78,6 +91,13 @@ export const AppProvider = ({ children }) => {
   // Toggle between API and Demo modes
   const toggleMode = () => {
     const nextMode = mode === 'demo' ? 'api' : 'demo';
+    if (nextMode === 'api' && token === 'demo_jwt_token_cyberpunk_neon') {
+      setUser(null);
+      setToken(null);
+      localStorage.removeItem('quizgen_user');
+      localStorage.removeItem('quizgen_token');
+      showToast('Demo session closed. Log in again for Live API mode.', 'info');
+    }
     setMode(nextMode);
     showToast(`Switched to ${nextMode.toUpperCase()} mode!`, 'info');
   };
@@ -120,9 +140,9 @@ export const AppProvider = ({ children }) => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
         });
-        const data = await response.json();
+        const data = await safeJson(response);
         if (!response.ok) {
-          throw new Error(data.message || 'Authentication failed');
+          throw new Error(data?.message || `Authentication failed (HTTP ${response.status})`);
         }
         setUser(data.user);
         setToken(data.token);
@@ -172,9 +192,9 @@ export const AppProvider = ({ children }) => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, email, password })
         });
-        const data = await response.json();
+        const data = await safeJson(response);
         if (!response.ok) {
-          throw new Error(data.message || 'Registration failed');
+          throw new Error(data?.message || `Registration failed (HTTP ${response.status})`);
         }
         showToast('Live registration successful! Proceeding to Login.', 'success');
         return true;
@@ -193,6 +213,14 @@ export const AppProvider = ({ children }) => {
     localStorage.removeItem('quizgen_user');
     localStorage.removeItem('quizgen_token');
     showToast('Terminal connection closed.', 'info');
+  };
+
+  const handleSessionExpired = () => {
+    setUser(null);
+    setToken(null);
+    localStorage.removeItem('quizgen_user');
+    localStorage.removeItem('quizgen_token');
+    showToast('Session expired. Please log in again.', 'error');
   };
 
   const updateProfile = async (updates) => {
@@ -221,9 +249,13 @@ export const AppProvider = ({ children }) => {
           },
           body: JSON.stringify(updates)
         });
-        const data = await response.json();
+        if (response.status === 401 || response.status === 403) {
+          handleSessionExpired();
+          throw new Error('Session expired. Please log in again.');
+        }
+        const data = await safeJson(response);
         if (!response.ok) {
-          throw new Error(data.message || 'Profile update failed');
+          throw new Error(data?.message || `Profile update failed (HTTP ${response.status})`);
         }
         setUser(data.user);
         localStorage.setItem('quizgen_user', JSON.stringify(data.user));
@@ -267,6 +299,10 @@ export const AppProvider = ({ children }) => {
         return newQuiz;
       } else {
         // API Live Quiz Generation
+        if (!token || token === 'demo_jwt_token_cyberpunk_neon') {
+          showToast('Please log in to use Live API mode.', 'error');
+          return null;
+        }
         const formData = new FormData();
         if (fileObj) {
           formData.append('file', fileObj);
@@ -284,10 +320,15 @@ export const AppProvider = ({ children }) => {
           },
           body: formData
         });
-        
-        const data = await response.json();
+
+        if (response.status === 401 || response.status === 403) {
+          handleSessionExpired();
+          throw new Error('Session expired. Please log in again.');
+        }
+
+        const data = await safeJson(response);
         if (!response.ok) {
-          throw new Error(data.message || 'AI quiz generation failed');
+          throw new Error(data?.message || `AI quiz generation failed (HTTP ${response.status})`);
         }
         
         setActiveQuiz(data.quiz);
@@ -368,6 +409,7 @@ export const AppProvider = ({ children }) => {
         };
 
         setActiveQuizResult(result);
+        localStorage.setItem('quizgen_active_result', JSON.stringify(result));
         setQuizzes((prev) => [result, ...prev]);
         showToast('Cognitive evaluation complete!', 'success');
         return result;
@@ -388,12 +430,18 @@ export const AppProvider = ({ children }) => {
           body: JSON.stringify(payload)
         });
 
-        const data = await response.json();
+        if (response.status === 401 || response.status === 403) {
+          handleSessionExpired();
+          throw new Error('Session expired. Please log in again.');
+        }
+
+        const data = await safeJson(response);
         if (!response.ok) {
-          throw new Error(data.message || 'Quiz submission failed');
+          throw new Error(data?.message || `Quiz submission failed (HTTP ${response.status})`);
         }
 
         setActiveQuizResult(data);
+        localStorage.setItem('quizgen_active_result', JSON.stringify(data));
         setQuizzes((prev) => [data, ...prev]);
         showToast('Live evaluation completed and saved!', 'success');
         return data;
@@ -417,6 +465,10 @@ export const AppProvider = ({ children }) => {
             'Authorization': `Bearer ${token}`
           }
         });
+        if (response.status === 401 || response.status === 403) {
+          handleSessionExpired();
+          throw new Error('Session expired. Please log in again.');
+        }
         if (!response.ok) {
           throw new Error('Failed to delete live quiz history');
         }

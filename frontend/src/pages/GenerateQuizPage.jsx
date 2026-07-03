@@ -124,8 +124,8 @@ const GenerateQuizPage = ({ setActivePage }) => {
         <div className="glass-panel gen-step-panel fade-in">
           <div className="cyber-accent accent-top-left"></div>
           <div className="cyber-accent accent-bottom-right"></div>
-          <h2 className="step-title">UPLOAD_DOCUMENT_NODE</h2>
-          <p className="step-desc">Feed the AI cognition engine with your study material. Supports PDF, DOCX, TXT, PPT, and image formats.</p>
+          <h2 className="step-title">Upload Your Document</h2>
+          <p className="step-desc">Upload your study material to generate quiz questions from it. Supports PDF, DOCX, TXT, PPT, and image formats.</p>
 
           {/* Input mode toggle */}
           <div className="input-mode-toggle">
@@ -172,8 +172,8 @@ const GenerateQuizPage = ({ setActivePage }) => {
                     </div>
                     <span className="file-status">
                       {uploadDone
-                        ? <><CheckCircle size={12} className="neon-text-green" /> EXTRACTION_COMPLETE</>
-                        : `UPLOADING... ${uploadProgress}%`}
+                        ? <><CheckCircle size={12} className="neon-text-green" /> Upload Complete</>
+                        : `Uploading... ${uploadProgress}%`}
                     </span>
                   </div>
                   <button className="remove-file-btn" onClick={handleRemoveFile}><X size={16} /></button>
@@ -194,7 +194,7 @@ const GenerateQuizPage = ({ setActivePage }) => {
             onClick={() => setStep(2)}
             disabled={!canProceedStep1}
           >
-            <span>PROCEED_TO_CONFIGURATION</span>
+            <span>Next: Configure Quiz</span>
             <ChevronRight size={16} />
           </button>
         </div>
@@ -205,8 +205,8 @@ const GenerateQuizPage = ({ setActivePage }) => {
         <div className="glass-panel gen-step-panel fade-in">
           <div className="cyber-accent accent-top-left"></div>
           <div className="cyber-accent accent-bottom-right"></div>
-          <h2 className="step-title">QUIZ_PARAMETER_MATRIX</h2>
-          <p className="step-desc">Configure the AI cognition parameters for optimal quiz generation.</p>
+          <h2 className="step-title">Configure Your Quiz</h2>
+          <p className="step-desc">Set the options for quiz generation below.</p>
 
           {/* Difficulty */}
           <div className="config-section">
@@ -245,7 +245,7 @@ const GenerateQuizPage = ({ setActivePage }) => {
 
           {/* Question Type */}
           <div className="config-section">
-            <label className="cyber-label">Question Type Protocol</label>
+            <label className="cyber-label">Question Type</label>
             <div className="qtype-grid">
               {qTypes.map((qt, idx) => (
                 <button
@@ -264,7 +264,7 @@ const GenerateQuizPage = ({ setActivePage }) => {
               ← BACK
             </button>
             <button className="neon-button step-next-btn" onClick={() => setStep(3)}>
-              <span>INITIATE_GENERATION</span>
+              <span>Next: Review & Generate</span>
               <ChevronRight size={16} />
             </button>
           </div>
@@ -276,8 +276,8 @@ const GenerateQuizPage = ({ setActivePage }) => {
         <div className="glass-panel gen-step-panel gen-step-3 fade-in">
           <div className="cyber-accent accent-top-left"></div>
           <div className="cyber-accent accent-bottom-right"></div>
-          <h2 className="step-title">COGNITIVE_SYNTHESIS_ENGINE</h2>
-          <p className="step-desc">Review your configuration and trigger the AI generation sequence.</p>
+          <h2 className="step-title">Review & Generate</h2>
+          <p className="step-desc">Check your settings and click the button below to generate your quiz.</p>
 
           <div className="config-summary-grid">
             <div className="summary-item">
@@ -308,19 +308,19 @@ const GenerateQuizPage = ({ setActivePage }) => {
                 <div className="ai-ring ai-ring-3"></div>
                 <Cpu size={32} className="neon-text-cyan ai-loader-icon anim-pulse" />
               </div>
-              <p className="ai-loading-text neon-text-blue">AI_COGNITION_ENGINE PROCESSING...</p>
-              <p className="ai-loading-sub">Extracting semantic concepts and generating question nodes</p>
+              <p className="ai-loading-text neon-text-blue">Generating your quiz, please wait...</p>
+              <p className="ai-loading-sub">Analyzing document and building questions</p>
             </div>
           ) : (
             <button className="neon-button generate-main-btn" onClick={handleGenerate}>
               <Zap size={20} />
-              <span>GENERATE_QUIZ_NOW</span>
+              <span>Generate Quiz Now</span>
             </button>
           )}
 
           {!quizLoading && (
             <button className="neon-button neon-button-purple step-back-btn" onClick={() => setStep(2)}>
-              ← RECONFIGURE
+              ← Back
             </button>
           )}
         </div>

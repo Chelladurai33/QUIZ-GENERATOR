@@ -4,7 +4,7 @@ import { LayoutDashboard, Cpu, History, Award, BookOpen, Clock, Activity, ArrowU
 import './DashboardPage.css';
 
 const DashboardPage = ({ setActivePage }) => {
-  const { quizzes, user } = useAppContext();
+  const { quizzes, user, setActiveQuizResult } = useAppContext();
 
   // Compute Stats
   const totalQuizzes = quizzes.length;
@@ -231,11 +231,9 @@ const DashboardPage = ({ setActivePage }) => {
               <button
                 className="neon-button neon-button-purple rq-review-btn"
                 onClick={() => {
-                  // Direct to result page
-                  // Store this as the active result in context
-                  // But wait, the submitQuiz does this, we need to load this result in state
+                  setActiveQuizResult(recentQuiz);
                   window.localStorage.setItem('quizgen_active_result', JSON.stringify(recentQuiz));
-                  setActivePage('history');
+                  setActivePage('result');
                 }}
               >
                 <span>View Report</span>

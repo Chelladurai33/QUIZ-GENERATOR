@@ -226,7 +226,7 @@ const EvaluationPage = ({ setActivePage }) => {
           <div className="ai-list-card">
             <h4>Strengths</h4>
             <ul>
-              {result.aiFeedback?.strengths.map((str, idx) => (
+              {result.aiFeedback?.strengths?.map((str, idx) => (
                 <li key={idx}>
                   <Check size={14} className="neon-text-green" /> {str}
                 </li>
@@ -236,7 +236,7 @@ const EvaluationPage = ({ setActivePage }) => {
           <div className="ai-list-card">
             <h4>Weaknesses</h4>
             <ul>
-              {result.aiFeedback?.weaknesses.map((weak, idx) => (
+              {result.aiFeedback?.weaknesses?.map((weak, idx) => (
                 <li key={idx}>
                   <AlertCircle size={14} className="neon-text-pink" /> {weak}
                 </li>
@@ -246,7 +246,7 @@ const EvaluationPage = ({ setActivePage }) => {
           <div className="ai-list-card">
             <h4>Recommendations</h4>
             <ul>
-              {result.aiFeedback?.recommendations.map((rec, idx) => (
+              {result.aiFeedback?.recommendations?.map((rec, idx) => (
                 <li key={idx} className="neon-text-cyan">
                   ⚡ {rec}
                 </li>

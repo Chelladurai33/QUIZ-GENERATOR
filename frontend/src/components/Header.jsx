@@ -1,7 +1,6 @@
 import React from 'react';
 import { useAppContext } from '../context/AppContext';
 import { Network, Database, LogOut, ShieldCheck, HelpCircle } from 'lucide-react';
-import './Header.jsx'; // We'll keep styles in a separate CSS file or in App.css. Let's create Header.css!
 import './Header.css';
 
 const Header = ({ pageTitle }) => {
