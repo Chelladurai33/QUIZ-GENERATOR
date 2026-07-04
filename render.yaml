@@ -1,10 +1,10 @@
 services:
-  # ─────────────────────────────────────────────
-  # Backend Service — Spring Boot REST API
-  # ─────────────────────────────────────────────
+  # ──────────────────────────────────────────────────────
+  # Backend Service — Spring Boot REST API (Java runtime)
+  # ──────────────────────────────────────────────────────
   - type: web
     name: quiz-generator-backend
-    env: java
+    runtime: java
     region: oregon
     plan: free
     buildCommand: cd backend && mvn clean package -DskipTests
@@ -30,13 +30,16 @@ services:
       - key: GEMINI_API_KEY
         sync: false
       - key: PORT
-        value: "8080"
+        value: "10000"
+      - key: ALLOWED_ORIGINS
+        value: https://quiz-generator-frontend.onrender.com
 
-  # ─────────────────────────────────────────────
-  # Frontend Service — React / Vite Static Site
-  # ─────────────────────────────────────────────
-  - type: static
+  # ──────────────────────────────────────────────────────
+  # Frontend Service — React / Vite (static runtime)
+  # ──────────────────────────────────────────────────────
+  - type: web
     name: quiz-generator-frontend
+    runtime: static
     region: oregon
     plan: free
     buildCommand: cd frontend && npm install && npm run build
@@ -50,9 +53,9 @@ services:
         destination: /index.html
 
 databases:
-  # ─────────────────────────────────────────────
+  # ──────────────────────────────────────────────────────
   # PostgreSQL — Managed by Render
-  # ─────────────────────────────────────────────
+  # ──────────────────────────────────────────────────────
   - name: quiz-generator-db
     databaseName: quizgen
     user: quizgen_user

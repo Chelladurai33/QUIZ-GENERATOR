@@ -1,8 +1,10 @@
 package com.quizgen.config;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -32,6 +34,13 @@ import com.quizgen.repository.UserRepository;
 public class SecurityConfig {
 
     private final UserRepository userRepository;
+
+    /**
+     * Comma-separated list of allowed CORS origins.
+     * Local default: localhost ports. Production: set via ALLOWED_ORIGINS env var in render.yaml.
+     */
+    @Value("${allowed.origins:http://localhost:5173,http://localhost:5174,http://localhost:3000}")
+    private String allowedOriginsRaw;
 
     public SecurityConfig(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -63,7 +72,6 @@ public class SecurityConfig {
 
     /**
      * Returns a proper 401 JSON response instead of Spring Security's default 403.
-     * This allows the frontend to detect unauthenticated requests and redirect to login.
      */
     @Bean
     public AuthenticationEntryPoint jwtAuthenticationEntryPoint() {
@@ -82,7 +90,8 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/error").permitAll()
+                        // Public endpoints: auth, error page, and Actuator health check
+                        .requestMatchers("/api/auth/**", "/error", "/api/actuator/health").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
@@ -93,10 +102,20 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:5174", "http://localhost:3000", "http://127.0.0.1:5173", "http://127.0.0.1:5174"));
+
+        // Parse the comma-separated list from the environment variable.
+        // Production value is set to https://quiz-generator-frontend.onrender.com via render.yaml.
+        List<String> origins = Arrays.stream(allowedOriginsRaw.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .toList();
+        configuration.setAllowedOrigins(origins);
+
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With"));
         configuration.setAllowCredentials(true);
+        // Cache preflight for 1 hour
+        configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
