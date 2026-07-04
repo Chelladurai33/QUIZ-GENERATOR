@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+
+backend/target/
+backend/data/*.mv.db
+backend/data/*.trace.db
+frontend/node_modules/

@@ -89,7 +89,7 @@ const Sidebar = ({ activePage, setActivePage }) => {
       </aside>
 
       {/* AI Chat panel rendered outside <aside> so it overlays the page */}
-      <AiAssistantChat isOpen={chatOpen} onClose={() => setChatOpen(false)} />
+      <AiAssistantChat isOpen={chatOpen} onClose={() => setChatOpen(false)} setActivePage={setActivePage} />
     </>
   );
 };

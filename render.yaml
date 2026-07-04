@@ -1,0 +1,43 @@
+services:
+  # Backend Service - Spring Boot API
+  - type: web
+    name: quiz-generator-backend
+    env: java
+    buildCommand: cd backend && mvn clean package -DskipTests
+    startCommand: cd backend && java -jar target/*.jar
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: quiz-generator-db
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: quiz-generator-db
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: quiz-generator-db
+          property: password
+      - key: JWT_SECRET
+        generateValue: true
+      - key: GEMINI_API_KEY
+        sync: false
+    plan: free
+
+  # Frontend Service - React/Vite
+  - type: web
+    name: quiz-generator-frontend
+    env: static
+    buildCommand: cd frontend && npm install && npm run build
+    publishDir: frontend/dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: https://quiz-generator-backend.onrender.com/api
+    plan: free
+
+databases:
+  # PostgreSQL Database
+  - name: quiz-generator-db
+    databaseName: quizgen
+    user: quizgen_user
+    plan: free
