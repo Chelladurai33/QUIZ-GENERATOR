@@ -1,10 +1,15 @@
 services:
-  # Backend Service - Spring Boot API
-- type: static
-  name: quiz-generator-frontend
+  # ─────────────────────────────────────────────
+  # Backend Service — Spring Boot REST API
+  # ─────────────────────────────────────────────
+  - type: web
+    name: quiz-generator-backend
     env: java
+    region: oregon
+    plan: free
     buildCommand: cd backend && mvn clean package -DskipTests
-    startCommand: cd backend && java -jar target/*.jar
+    startCommand: cd backend && java -jar target/quiz-generator-api-0.0.1-SNAPSHOT.jar
+    healthCheckPath: /api/actuator/health
     envVars:
       - key: SPRING_DATASOURCE_URL
         fromDatabase:
@@ -18,27 +23,38 @@ services:
         fromDatabase:
           name: quiz-generator-db
           property: password
+      - key: SPRING_DATASOURCE_DRIVER
+        value: org.postgresql.Driver
       - key: JWT_SECRET
         generateValue: true
       - key: GEMINI_API_KEY
         sync: false
+      - key: PORT
+        value: "8080"
+
+  # ─────────────────────────────────────────────
+  # Frontend Service — React / Vite Static Site
+  # ─────────────────────────────────────────────
+  - type: static
+    name: quiz-generator-frontend
+    region: oregon
     plan: free
-
-  # Frontend Service - React/Vite
-- type: static
-  name: quiz-generator-frontend
-  buildCommand: cd frontend && npm install && npm run build
-  staticPublishPath: frontend/dist
-
-  envVars:
-    - key: VITE_API_BASE_URL
-      value: https://quiz-generator-backend.onrender.com/api
-
-  plan: free
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: frontend/dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: https://quiz-generator-backend.onrender.com/api
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
 
 databases:
-  # PostgreSQL Database
+  # ─────────────────────────────────────────────
+  # PostgreSQL — Managed by Render
+  # ─────────────────────────────────────────────
   - name: quiz-generator-db
     databaseName: quizgen
     user: quizgen_user
     plan: free
+    region: oregon

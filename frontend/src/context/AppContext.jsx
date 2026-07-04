@@ -20,7 +20,7 @@ export const AppProvider = ({ children }) => {
   // Config state
   const [mode, setMode] = useState(() => localStorage.getItem('quizgen_mode') || 'demo'); // 'demo' or 'api'
   const [apiBaseUrl] = useState(() =>
-    import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? '/api' : 'http://localhost:8080/api')
+    import.meta.env.VITE_API_BASE_URL || '/api'
   );
 
   // Authentication State
