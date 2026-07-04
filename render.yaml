@@ -1,7 +1,7 @@
 services:
   # Backend Service - Spring Boot API
-  - type: web
-    name: quiz-generator-backend
+- type: static
+  name: quiz-generator-frontend
     env: java
     buildCommand: cd backend && mvn clean package -DskipTests
     startCommand: cd backend && java -jar target/*.jar
@@ -25,15 +25,16 @@ services:
     plan: free
 
   # Frontend Service - React/Vite
-  - type: web
-    name: quiz-generator-frontend
-    env: static
-    buildCommand: cd frontend && npm install && npm run build
-    publishDir: frontend/dist
-    envVars:
-      - key: VITE_API_BASE_URL
-        value: https://quiz-generator-backend.onrender.com/api
-    plan: free
+- type: static
+  name: quiz-generator-frontend
+  buildCommand: cd frontend && npm install && npm run build
+  staticPublishPath: frontend/dist
+
+  envVars:
+    - key: VITE_API_BASE_URL
+      value: https://quiz-generator-backend.onrender.com/api
+
+  plan: free
 
 databases:
   # PostgreSQL Database
