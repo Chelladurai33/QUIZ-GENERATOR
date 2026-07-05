@@ -52,7 +52,6 @@ services:
   - type: web
     name: quiz-generator-frontend
     runtime: static
-    region: oregon
     plan: free
     buildCommand: cd frontend && npm install && npm run build
     staticPublishPath: frontend/dist
