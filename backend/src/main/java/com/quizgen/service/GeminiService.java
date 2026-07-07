@@ -675,9 +675,14 @@ public class GeminiService {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() != 200) {
-            log.error("Gemini Assistant failed: {}, Response: {}", response.statusCode(), response.body());
-            return getLocalAssistantResponse(userPrompt);
-        }
+    System.out.println("Status Code: " + response.statusCode());
+    System.out.println("Response Body:");
+    System.out.println(response.body());
+
+    throw new RuntimeException(
+        "Gemini API failed: " + response.statusCode() + "\n" + response.body()
+    );
+}
 
         Map<?, ?> responseMap = objectMapper.readValue(response.body(), Map.class);
         List<?> candidates = (List<?>) responseMap.get("candidates");
